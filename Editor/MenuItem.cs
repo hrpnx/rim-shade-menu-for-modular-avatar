@@ -4,6 +4,8 @@ using VRC.SDKBase;
 
 namespace dev.hrpnx.rim_shade_menu_installer.plugin
 {
+    public class RimShadeMenuInstaller : nadena.dev.modular_avatar.core.AvatarTagComponent { }
+
     public class MenuItem : MonoBehaviour, IEditorOnly
     {
         [UnityEditor.MenuItem("GameObject/Create RimShadeMenuInstaller", false, 0)]
