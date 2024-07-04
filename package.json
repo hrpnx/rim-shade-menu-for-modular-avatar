@@ -1,0 +1,12 @@
+{
+  "name": "dev.hrpnx.rim-shade-menu-creator",
+  "displayName": "RimShadeMenuCreator",
+  "version": "0.0.1",
+  "unity": "2022.3",
+  "description": "TODO: write description",
+  "vpmDependencies": {
+    "com.vrchat.avatars": ">=3.4.0",
+    "nadena.dev.modular-avatar": ">=1.0.0 <2.0.0-a",
+    "jp.lilxyzw.liltoon": ">=1.7.0"
+  }
+}
