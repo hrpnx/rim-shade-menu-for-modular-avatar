@@ -1,97 +1,56 @@
-using UnityEngine;
-using UnityEditor;
-using VRC.SDK3.Avatars.Components;
-using VRC.SDK3.Avatars.ScriptableObjects;
+using System.Collections.Generic;
 using System.IO;
 using ExpressionControl = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu.Control;
+using dev.hrpnx.rim_shade_menu_installer.plugin;
+using nadena.dev.ndmf;
+using UnityEditor;
 using UnityEditor.Animations;
-using nadena.dev.modular_avatar.core;
+using UnityEngine;
+using VRC.SDK3.Avatars.Components;
+using VRC.SDK3.Avatars.ScriptableObjects;
 using System;
-using System.Collections.Generic;
+using nadena.dev.modular_avatar.core;
+using UnityEngine.SceneManagement;
 
-namespace dev.hrpnx.rim_shade_menu_creator.editor
+[assembly: ExportsPlugin(typeof(RimShadeMenuInstallerPlugin))]
+
+namespace dev.hrpnx.rim_shade_menu_installer.plugin
 {
-    public class UI : EditorWindow
+    public class RimShadeMenuInstallerPlugin : Plugin<RimShadeMenuInstallerPlugin>
     {
-        private static readonly string PrefKeyColor = "RimShadeMenuCreator_RimColor";
-        private static readonly string PrefKeyNormalMapIntensity = "RimShadeMenuCreator_NormalMapIntensity";
-        private static readonly string PrefKeyRange = "RimShadeMenuCreator_Range";
-        private static readonly string PrefKeyBlur = "RimShadeMenuCreator_Blur";
-        private static readonly string PrefKeyRimLightIntensity = "RimShadeMenuCreator_RimLightIntensity";
-        private static readonly string PrefKeyIsDefault = "RimShadeMenuCreator_IsDefault";
-        private static readonly string PrefKeyIsSaved = "RimShadeMenuCreator_IsSaved";
+        // TODO: override QualifiedName and DisplayName
 
-        private GameObject avatarRoot;
-
-        private Color color;
-        private float normalMapIntensity;
-        private float range;
-        private float blur;
-        private float rimLightIntensity;
-
-        private bool isDefault;
-        private bool isSaved;
-
-        [MenuItem("Tools/Modular Avatar/RimShadeMenuCreator")]
-        private static void Create()
-        {
-            var window = GetWindow<UI>("UIElements");
-            window.titleContent = new GUIContent("RimShadeMenuCreator");
-        }
-
-        public void OnGUI()
-        {
-            this.LoadSettings();
-
-            EditorGUI.BeginChangeCheck();
-
-            this.color = EditorGUILayout.ColorField("Color", this.color);
-            this.normalMapIntensity = EditorGUILayout.Slider("Normal Map Strength", this.normalMapIntensity, 0.0f, 1.0f);
-            this.range = EditorGUILayout.Slider("Border", this.range, 0.0f, 1.0f);
-            this.blur = EditorGUILayout.Slider("Blur", this.blur, 0.0f, 1.0f);
-            this.rimLightIntensity = EditorGUILayout.Slider("Fresnel Power", this.rimLightIntensity, 0.01f, 50.0f);
-            this.isDefault = GUILayout.Toggle(this.isDefault, "Default On");
-            this.isSaved = GUILayout.Toggle(this.isSaved, "Saved");
-
-            if (EditorGUI.EndChangeCheck())
+        protected override void Configure() => this
+            .InPhase(BuildPhase.Transforming)
+            .BeforePlugin("nadena.dev.modular-avatar")
+            .Run("Install RimShadeMenu", ctx =>
             {
-                this.SaveSettings();
-            }
+                var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<RimShadeMenuInstaller>();
+                var avatarRoot = menuInstaller.gameObject.transform.parent.gameObject;
+                Debug.Log($"hello {avatarRoot.name}!2");
 
-            this.avatarRoot = (GameObject)EditorGUILayout.ObjectField("Avatar", this.avatarRoot, typeof(GameObject), true);
-            if (this.avatarRoot == null)
-            {
-                EditorGUILayout.LabelField("Please select an avatar object.");
-                return;
-            }
+                if (!avatarRoot.GetComponent<VRCAvatarDescriptor>())
+                {
+                    EditorUtility.DisplayDialog("Error", "Avatar root does not have VRCAvatarDescriptor component.", "OK");
+                    return;
+                }
 
-            if (!this.avatarRoot.GetComponent<VRCAvatarDescriptor>())
-            {
-                EditorGUILayout.LabelField("Please select an avatar object.");
-                return;
+                this.CreateMenu(avatarRoot, menuInstaller.gameObject);
             }
+        );
 
-            if (GUILayout.Button("Create Menu"))
-            {
-                GUI.enabled = false;
-                this.SaveSettings();
-                this.CreateToggleMenu();
-                EditorUtility.DisplayDialog("Info", "Menu created successfully.", "OK");
-                GUI.enabled = true;
-            }
-        }
-
-        private void CreateToggleMenu()
+        private void CreateMenu(GameObject avatarRoot, GameObject menuInstaller)
         {
             List<Renderer> renderers = new();
-            this.CollectRenderersRecursive(this.avatarRoot.transform, renderers);
+            this.CollectRenderersRecursive(avatarRoot.transform, renderers);
 
             var destDir = Path.Combine(
                 "Assets",
                 "Editor",
-                "RimShadeMenuCreator",
-                "Created",
-                this.avatarRoot.name
+                "RimShadeMenuInstaller",
+                "Generated",
+                SceneManager.GetActiveScene().name,
+                avatarRoot.name
             );
 
             if (Directory.Exists(destDir))
@@ -102,24 +61,25 @@ namespace dev.hrpnx.rim_shade_menu_creator.editor
             Directory.CreateDirectory(destDir);
             AssetDatabase.Refresh();
 
-            var baseName = "RimShadeToggle";
+            var baseName = "RimShadeMenu";
 
             // create animation clip (on)
             var destAnimClipOnFilePath = Path.Combine(destDir, $"{baseName}_On.anim");
             var animOnClip = new AnimationClip();
 
+            var color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
             foreach (var renderer in renderers)
             {
                 var transform = renderer.gameObject.transform;
-                this.AddAnimation(transform, animOnClip, "material._UseRimShade", 1);
-                this.AddAnimation(transform, animOnClip, "material._RimShadeColor.r", this.color.r);
-                this.AddAnimation(transform, animOnClip, "material._RimShadeColor.g", this.color.g);
-                this.AddAnimation(transform, animOnClip, "material._RimShadeColor.b", this.color.b);
-                this.AddAnimation(transform, animOnClip, "material._RimShadeColor.a", this.color.a);
-                this.AddAnimation(transform, animOnClip, "material._RimShadeNormalStrength", this.normalMapIntensity);
-                this.AddAnimation(transform, animOnClip, "material._RimShadeBorder", this.range);
-                this.AddAnimation(transform, animOnClip, "material._RimShadeBlur", this.blur);
-                this.AddAnimation(transform, animOnClip, "material._RimShadeFresnelPower", this.rimLightIntensity);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._UseRimShade", 1);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.r", color.r);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.g", color.g);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.b", color.b);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.a", color.a);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeNormalStrength", 1.0f);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBorder", 0.5f);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBlur", 1.0f);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeFresnelPower", 1.0f);
             }
 
             this.CreateAsset(animOnClip, destAnimClipOnFilePath);
@@ -131,7 +91,7 @@ namespace dev.hrpnx.rim_shade_menu_creator.editor
             foreach (var renderer in renderers)
             {
                 var transform = renderer.gameObject.transform;
-                this.AddAnimation(transform, animOffClip, "material._UseRimShade", 0);
+                this.AddAnimation(transform, avatarRoot.transform, animOffClip, "material._UseRimShade", 0);
             }
 
             this.CreateAsset(animOffClip, destAnimClipOffFilePath);
@@ -143,7 +103,7 @@ namespace dev.hrpnx.rim_shade_menu_creator.editor
                 {
                     name = baseName,
                     type = AnimatorControllerParameterType.Bool,
-                    defaultBool = this.isDefault,
+                    defaultBool = false,
                 }
             );
             if (controller.layers.Length == 0)
@@ -207,7 +167,7 @@ namespace dev.hrpnx.rim_shade_menu_creator.editor
             };
 
             // create menu
-            var menu = CreateInstance<VRCExpressionsMenu>();
+            var menu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
             menu.name = baseName;
 
             var exControl = new ExpressionControl
@@ -220,29 +180,35 @@ namespace dev.hrpnx.rim_shade_menu_creator.editor
             menu.controls.Add(exControl);
             this.CreateAsset(menu, Path.Combine(destDir, $"{baseName}.asset"));
 
-            var menuInstallerName = "RimShadeToggleMenu";
-            var oldMenuInstaller = GameObject.Find(menuInstallerName);
-            DestroyImmediate(oldMenuInstaller);
-
-            // create menu installer
-            var menuInstaller = new GameObject(menuInstallerName);
-            menuInstaller.transform.SetParent(this.avatarRoot.transform);
+            // attach maMenuInstaller to menuInstaller
             var maMenuInstaller = menuInstaller.AddComponent<ModularAvatarMenuInstaller>();
             maMenuInstaller.menuToAppend = menu;
-            // maMenuInstaller.
             var maParameters = menuInstaller.AddComponent<ModularAvatarParameters>();
             maParameters.parameters.Add(new ParameterConfig
             {
                 nameOrPrefix = baseName,
-                defaultValue = this.isDefault ? 1 : 0,
-                saved = this.isSaved,
+                defaultValue = 0,
+                saved = false,
                 syncType = ParameterSyncType.Bool
             });
             var maMergeAnimator = menuInstaller.AddComponent<ModularAvatarMergeAnimator>();
             maMergeAnimator.animator = controller;
             maMergeAnimator.layerType = VRCAvatarDescriptor.AnimLayerType.FX;
             maMergeAnimator.pathMode = MergeAnimatorPathMode.Absolute;
-            maMergeAnimator.matchAvatarWriteDefaults = true;
+            maMergeAnimator.matchAvatarWriteDefaults = false;
+        }
+
+        private void CollectRenderersRecursive(Transform current, List<Renderer> renderers)
+        {
+            if (current.gameObject.TryGetComponent<Renderer>(out var r))
+            {
+                renderers.Add(r);
+            }
+
+            foreach (Transform child in current)
+            {
+                this.CollectRenderersRecursive(child, renderers);
+            }
         }
 
         private string GetRelativePath(Transform transform, Transform root)
@@ -263,22 +229,9 @@ namespace dev.hrpnx.rim_shade_menu_creator.editor
             return parent == root ? path : null;
         }
 
-        private void CollectRenderersRecursive(Transform current, List<Renderer> renderers)
+        private void AddAnimation(Transform transform, Transform rootTransform, AnimationClip clip, string propertyName, float value)
         {
-            if (current.gameObject.TryGetComponent<Renderer>(out var r))
-            {
-                renderers.Add(r);
-            }
-
-            foreach (Transform child in current)
-            {
-                this.CollectRenderersRecursive(child, renderers);
-            }
-        }
-
-        private void AddAnimation(Transform transform, AnimationClip clip, string propertyName, float value)
-        {
-            var path = this.GetRelativePath(transform, this.avatarRoot.transform);
+            var path = this.GetRelativePath(transform, rootTransform);
             var renderer = transform.GetComponent<Renderer>();
 
             foreach (var mat in renderer.sharedMaterials)
@@ -288,11 +241,11 @@ namespace dev.hrpnx.rim_shade_menu_creator.editor
                     continue;
                 }
 
-                this.MakeAnimation(clip, propertyName, value, path, renderer.GetType());
+                this.SetCurve(clip, propertyName, value, path, renderer.GetType());
             }
         }
 
-        private void MakeAnimation(AnimationClip clip, string propertyName, float value, string path, Type type)
+        private void SetCurve(AnimationClip clip, string propertyName, float value, string path, Type type)
         {
             foreach (var binding in AnimationUtility.GetCurveBindings(clip))
             {
@@ -332,33 +285,6 @@ namespace dev.hrpnx.rim_shade_menu_creator.editor
             AssetDatabase.CreateAsset(asset, AssetDatabase.GenerateUniqueAssetPath(dest));
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
-        }
-
-        private void SaveSettings()
-        {
-            EditorPrefs.SetString(PrefKeyColor, ColorUtility.ToHtmlStringRGBA(this.color));
-            EditorPrefs.SetFloat(PrefKeyNormalMapIntensity, this.normalMapIntensity);
-            EditorPrefs.SetFloat(PrefKeyRange, this.range);
-            EditorPrefs.SetFloat(PrefKeyBlur, this.blur);
-            EditorPrefs.SetFloat(PrefKeyRimLightIntensity, this.rimLightIntensity);
-            EditorPrefs.SetBool(PrefKeyIsSaved, this.isSaved);
-            EditorPrefs.SetBool(PrefKeyIsDefault, this.isDefault);
-        }
-
-        private void LoadSettings()
-        {
-            var rawColor = EditorPrefs.GetString(PrefKeyColor, "808080");
-            if (ColorUtility.TryParseHtmlString("#" + rawColor, out var parsed))
-            {
-                this.color = parsed;
-            }
-
-            this.normalMapIntensity = EditorPrefs.GetFloat(PrefKeyNormalMapIntensity, 1.0f);
-            this.range = EditorPrefs.GetFloat(PrefKeyRange, 0.5f);
-            this.blur = EditorPrefs.GetFloat(PrefKeyBlur, 1.0f);
-            this.rimLightIntensity = EditorPrefs.GetFloat(PrefKeyRimLightIntensity, 1.0f);
-            this.isSaved = EditorPrefs.GetBool(PrefKeyIsSaved, false);
-            this.isDefault = EditorPrefs.GetBool(PrefKeyIsDefault, false);
         }
     }
 }
