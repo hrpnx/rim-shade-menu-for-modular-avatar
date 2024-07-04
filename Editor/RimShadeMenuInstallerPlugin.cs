@@ -27,7 +27,6 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
             {
                 var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<RimShadeMenuInstaller>();
                 var avatarRoot = menuInstaller.gameObject.transform.parent.gameObject;
-                Debug.Log($"hello {avatarRoot.name}!2");
 
                 if (!avatarRoot.GetComponent<VRCAvatarDescriptor>())
                 {
@@ -35,11 +34,11 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
                     return;
                 }
 
-                this.CreateMenu(avatarRoot, menuInstaller.gameObject);
+                this.CreateMenu(avatarRoot, menuInstaller);
             }
         );
 
-        private void CreateMenu(GameObject avatarRoot, GameObject menuInstaller)
+        private void CreateMenu(GameObject avatarRoot, RimShadeMenuInstaller menuInstaller)
         {
             List<Renderer> renderers = new();
             this.CollectRenderersRecursive(avatarRoot.transform, renderers);
@@ -67,19 +66,18 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
             var destAnimClipOnFilePath = Path.Combine(destDir, $"{baseName}_On.anim");
             var animOnClip = new AnimationClip();
 
-            var color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
             foreach (var renderer in renderers)
             {
                 var transform = renderer.gameObject.transform;
                 this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._UseRimShade", 1);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.r", color.r);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.g", color.g);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.b", color.b);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.a", color.a);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeNormalStrength", 1.0f);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBorder", 0.5f);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBlur", 1.0f);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeFresnelPower", 1.0f);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.r", menuInstaller.Color.r);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.g", menuInstaller.Color.g);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.b", menuInstaller.Color.b);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.a", menuInstaller.Color.a);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeNormalStrength", menuInstaller.NormalStrength);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBorder", menuInstaller.Border);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBlur", menuInstaller.Blur);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeFresnelPower", menuInstaller.FresnelPower);
             }
 
             this.CreateAsset(animOnClip, destAnimClipOnFilePath);
@@ -181,9 +179,9 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
             this.CreateAsset(menu, Path.Combine(destDir, $"{baseName}.asset"));
 
             // attach maMenuInstaller to menuInstaller
-            var maMenuInstaller = menuInstaller.AddComponent<ModularAvatarMenuInstaller>();
+            var maMenuInstaller = menuInstaller.gameObject.AddComponent<ModularAvatarMenuInstaller>();
             maMenuInstaller.menuToAppend = menu;
-            var maParameters = menuInstaller.AddComponent<ModularAvatarParameters>();
+            var maParameters = menuInstaller.gameObject.AddComponent<ModularAvatarParameters>();
             maParameters.parameters.Add(new ParameterConfig
             {
                 nameOrPrefix = baseName,
@@ -191,7 +189,7 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
                 saved = false,
                 syncType = ParameterSyncType.Bool
             });
-            var maMergeAnimator = menuInstaller.AddComponent<ModularAvatarMergeAnimator>();
+            var maMergeAnimator = menuInstaller.gameObject.AddComponent<ModularAvatarMergeAnimator>();
             maMergeAnimator.animator = controller;
             maMergeAnimator.layerType = VRCAvatarDescriptor.AnimLayerType.FX;
             maMergeAnimator.pathMode = MergeAnimatorPathMode.Absolute;
