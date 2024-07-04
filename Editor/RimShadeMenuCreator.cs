@@ -9,7 +9,7 @@ using nadena.dev.modular_avatar.core;
 using System;
 using System.Collections.Generic;
 
-namespace dev.hrpnx.rim_shade_menu_creator.editor
+namespace dev.hrpnx.rim_shade_menu_installer.editor
 {
     public class UI : EditorWindow
     {
