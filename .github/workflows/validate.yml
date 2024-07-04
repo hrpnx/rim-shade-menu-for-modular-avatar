@@ -21,3 +21,6 @@ jobs:
 
       - name: Run editorconfig-checker
         run: npx -p editorconfig-checker editorconfig-checker
+
+      - name: Run cspell
+        run: npx -p cspell .
