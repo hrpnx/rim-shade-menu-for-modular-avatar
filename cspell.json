@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/streetsidesoftware/cspell/main/cspell.schema.json",
+  "version": "0.2",
+  "dictionaries": ["csharp"],
+  "ignorePaths": ["cspell.json", "package.json", "*.meta"],
+  "words": [
+    "scriptable",
+    "nadena",
+    "hrpnx",
+    "toon",
+    "prefs",
+    "vrchat",
+    "lilxyzw",
+    "liltoon"
+  ]
+}

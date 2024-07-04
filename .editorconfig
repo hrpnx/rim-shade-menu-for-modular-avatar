@@ -19,6 +19,14 @@ indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
 
+# Ignore paths
+[*.meta]
+charset = unset
+indent_style = unset
+indent_size = unset
+insert_final_newline = unset
+trim_trailing_whitespace = unset
+
 ##########################################
 # File Extension Settings
 ##########################################
