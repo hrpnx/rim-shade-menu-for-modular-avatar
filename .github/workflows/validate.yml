@@ -5,6 +5,9 @@ on:
     branches-ignore:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   editorconfig-check:
     runs-on: ubuntu-latest
