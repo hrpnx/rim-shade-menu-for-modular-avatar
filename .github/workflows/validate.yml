@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 jobs:
-  editorconfig-check:
+  editorconfig:
     runs-on: ubuntu-latest
 
     steps:
@@ -21,6 +21,16 @@ jobs:
 
       - name: Run editorconfig-checker
         run: npx -p editorconfig-checker editorconfig-checker
+
+  cspell:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: latest
 
       - name: Run cspell
         run: npx -p cspell .
