@@ -15,7 +15,7 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
 
     public class MenuItem : MonoBehaviour
     {
-        [UnityEditor.MenuItem("GameObject/Create RimShadeMenuInstaller", false, 0)]
+        [UnityEditor.MenuItem("GameObject/Modular Avatar/Add RimShadeMenuInstaller", false, 0)]
         public static void Create()
         {
             var avatarRoot = Selection.activeGameObject;
