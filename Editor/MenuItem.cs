@@ -22,8 +22,12 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
             // TODO: Validate that avatarRoot is indeed the avatar root game object
 
             var menuInstallerName = "RimShadeMenuInstaller";
-            var oldMenuInstaller = GameObject.Find(menuInstallerName);
-            DestroyImmediate(oldMenuInstaller);
+            var existingMenuInstaller = avatarRoot.transform.Find(menuInstallerName);
+            if (existingMenuInstaller != null && existingMenuInstaller.gameObject != null)
+            {
+                Debug.Log("RimShadeMenuInstaller: already exists. so skipping creation.");
+                return;
+            }
 
             var menuInstaller = new GameObject(menuInstallerName);
             menuInstaller.transform.SetParent(avatarRoot.transform);
