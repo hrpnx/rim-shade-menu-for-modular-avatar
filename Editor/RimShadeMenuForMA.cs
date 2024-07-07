@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using ExpressionControl = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu.Control;
-using dev.hrpnx.rim_shade_menu_for_ma.plugin;
+using dev.hrpnx.rim_shade_menu_for_ma.editor;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -14,7 +14,7 @@ using UnityEngine.SceneManagement;
 
 [assembly: ExportsPlugin(typeof(RimShadeMenuForMA))]
 
-namespace dev.hrpnx.rim_shade_menu_for_ma.plugin
+namespace dev.hrpnx.rim_shade_menu_for_ma.editor
 {
     public class RimShadeMenuForMA : Plugin<RimShadeMenuForMA>
     {

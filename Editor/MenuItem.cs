@@ -2,7 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using VRC.SDKBase;
 
-namespace dev.hrpnx.rim_shade_menu_for_ma.plugin
+namespace dev.hrpnx.rim_shade_menu_for_ma.editor
 {
     public class Installer : MonoBehaviour, IEditorOnly
     {
