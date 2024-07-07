@@ -12,11 +12,11 @@ using System;
 using nadena.dev.modular_avatar.core;
 using UnityEngine.SceneManagement;
 
-[assembly: ExportsPlugin(typeof(RimShadeMenuForMA))]
+[assembly: ExportsPlugin(typeof(Plugin))]
 
 namespace dev.hrpnx.rim_shade_menu_for_ma.editor
 {
-    public class RimShadeMenuForMA : Plugin<RimShadeMenuForMA>
+    public class Plugin : nadena.dev.ndmf.Plugin<Plugin>
     {
         // TODO: override QualifiedName and DisplayName
 
