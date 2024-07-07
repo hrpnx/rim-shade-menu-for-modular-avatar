@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.IO;
 using ExpressionControl = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu.Control;
 using dev.hrpnx.rim_shade_menu_for_modular_avatar.editor;
+using dev.hrpnx.rim_shade_menu_for_modular_avatar.runtime;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEditor.Animations;

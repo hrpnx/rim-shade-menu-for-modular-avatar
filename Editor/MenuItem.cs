@@ -1,18 +1,9 @@
 using UnityEditor;
 using UnityEngine;
-using VRC.SDKBase;
+using dev.hrpnx.rim_shade_menu_for_modular_avatar.runtime;
 
 namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
 {
-    public class Installer : MonoBehaviour, IEditorOnly
-    {
-        public Color Color;
-        public float NormalStrength;
-        public float Border;
-        public float Blur;
-        public float FresnelPower;
-    }
-
     public class MenuItem : MonoBehaviour
     {
         [UnityEditor.MenuItem("GameObject/Modular Avatar/Add RimShade Menu Installer", false, 0)]

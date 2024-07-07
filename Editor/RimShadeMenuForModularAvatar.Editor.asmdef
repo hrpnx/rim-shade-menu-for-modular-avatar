@@ -1,0 +1,12 @@
+{
+    "name": "RimShadeMenuForModularAvatar.Editor",
+    "rootNamespace": "dev.hrpnx.rim_shade_menu_for_modular_avatar.editor",
+    "references": [
+        "nadena.dev.modular-avatar.core",
+        "nadena.dev.ndmf",
+        "RimShadeMenuForModularAvatarInstaller"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ]
+}
