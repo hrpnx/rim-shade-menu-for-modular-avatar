@@ -4,7 +4,7 @@
     "references": [
         "nadena.dev.modular-avatar.core",
         "nadena.dev.ndmf",
-        "RimShadeMenuForModularAvatarInstaller"
+        "RimShadeMenuForModularAvatar.Runtime"
     ],
     "includePlatforms": [
         "Editor"

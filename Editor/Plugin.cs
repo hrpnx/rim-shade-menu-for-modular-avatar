@@ -17,7 +17,7 @@ using UnityEngine.SceneManagement;
 
 namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
 {
-    public class Plugin : nadena.dev.ndmf.Plugin<Plugin>
+    public class Plugin : Plugin<Plugin>
     {
         // TODO: override QualifiedName and DisplayName
 
