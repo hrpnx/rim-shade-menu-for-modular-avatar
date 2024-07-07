@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.IO;
 using ExpressionControl = VRC.SDK3.Avatars.ScriptableObjects.VRCExpressionsMenu.Control;
-using dev.hrpnx.rim_shade_menu_installer.plugin;
+using dev.hrpnx.rim_shade_menu_for_ma.plugin;
 using nadena.dev.ndmf;
 using UnityEditor;
 using UnityEditor.Animations;
@@ -12,11 +12,11 @@ using System;
 using nadena.dev.modular_avatar.core;
 using UnityEngine.SceneManagement;
 
-[assembly: ExportsPlugin(typeof(RimShadeMenuInstallerPlugin))]
+[assembly: ExportsPlugin(typeof(RimShadeMenuForMA))]
 
-namespace dev.hrpnx.rim_shade_menu_installer.plugin
+namespace dev.hrpnx.rim_shade_menu_for_ma.plugin
 {
-    public class RimShadeMenuInstallerPlugin : Plugin<RimShadeMenuInstallerPlugin>
+    public class RimShadeMenuForMA : Plugin<RimShadeMenuForMA>
     {
         // TODO: override QualifiedName and DisplayName
 
@@ -25,7 +25,7 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
             .BeforePlugin("nadena.dev.modular-avatar")
             .Run("Install RimShadeMenu", ctx =>
             {
-                var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<RimShadeMenuInstaller>();
+                var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<Installer>();
                 var avatarRoot = menuInstaller.gameObject.transform.parent.gameObject;
 
                 if (!avatarRoot.GetComponent<VRCAvatarDescriptor>())
@@ -38,7 +38,7 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
             }
         );
 
-        private void CreateMenu(GameObject avatarRoot, RimShadeMenuInstaller menuInstaller)
+        private void CreateMenu(GameObject avatarRoot, Installer menuInstaller)
         {
             List<Renderer> renderers = new();
             this.CollectRenderersRecursive(avatarRoot.transform, renderers);
@@ -46,7 +46,7 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
             var destDir = Path.Combine(
                 "Assets",
                 "Editor",
-                "RimShadeMenuInstaller",
+                "Installer",
                 "Generated",
                 SceneManager.GetActiveScene().name,
                 avatarRoot.name

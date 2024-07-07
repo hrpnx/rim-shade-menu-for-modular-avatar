@@ -2,9 +2,9 @@ using UnityEditor;
 using UnityEngine;
 using VRC.SDKBase;
 
-namespace dev.hrpnx.rim_shade_menu_installer.plugin
+namespace dev.hrpnx.rim_shade_menu_for_ma.plugin
 {
-    public class RimShadeMenuInstaller : MonoBehaviour, IEditorOnly
+    public class Installer : MonoBehaviour, IEditorOnly
     {
         public Color Color;
         public float NormalStrength;
@@ -15,7 +15,7 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
 
     public class MenuItem : MonoBehaviour
     {
-        [UnityEditor.MenuItem("GameObject/Modular Avatar/Add RimShadeMenuInstaller", false, 0)]
+        [UnityEditor.MenuItem("GameObject/Modular Avatar/Add RimShade Menu Installer", false, 0)]
         public static void Create()
         {
             var avatarRoot = Selection.activeGameObject;
@@ -25,13 +25,13 @@ namespace dev.hrpnx.rim_shade_menu_installer.plugin
             var existingMenuInstaller = avatarRoot.transform.Find(menuInstallerName);
             if (existingMenuInstaller != null && existingMenuInstaller.gameObject != null)
             {
-                Debug.Log("RimShadeMenuInstaller: already exists. so skipping creation.");
+                Debug.Log("installer already exists. so skipping creation.");
                 return;
             }
 
             var menuInstaller = new GameObject(menuInstallerName);
             menuInstaller.transform.SetParent(avatarRoot.transform);
-            var component = menuInstaller.AddComponent<RimShadeMenuInstaller>();
+            var component = menuInstaller.AddComponent<Installer>();
             component.Color = new Color(0.5f, 0.5f, 0.5f, 1);
             component.NormalStrength = 1.0f;
             component.Border = 0.5f;
