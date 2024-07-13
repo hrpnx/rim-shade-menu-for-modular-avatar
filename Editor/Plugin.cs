@@ -47,10 +47,8 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             var destDir = Path.Combine(
                 "Assets",
                 "Editor",
-                "Installer",
-                "Generated",
-                SceneManager.GetActiveScene().name,
-                avatarRoot.name
+                "RimShadeMenuInstaller",
+                "__Generated"
             );
 
             if (Directory.Exists(destDir))
