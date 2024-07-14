@@ -103,10 +103,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
                     defaultBool = false,
                 }
             );
-            if (controller.layers.Length == 0)
-            {
-                controller.AddLayer(baseName);
-            }
+            controller.AddLayer(baseName);
 
             var layer = controller.layers[0];
             layer.name = baseName;
@@ -114,54 +111,25 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             layer.stateMachine.entryPosition = new Vector3(-300, 0);
             layer.stateMachine.anyStatePosition = new Vector3(400, 0);
 
-            var idleState = layer.stateMachine.AddState($"{baseName}_Idle", new Vector3(-150, 0));
-            idleState.motion = animOffClip;
-            idleState.writeDefaultValues = false;
-
             var offState = layer.stateMachine.AddState($"{baseName}_Off", new Vector3(150, 50));
             offState.motion = animOffClip;
             offState.writeDefaultValues = false;
 
+            var toOffTransition = layer.stateMachine.AddAnyStateTransition(offState);
+            toOffTransition.AddCondition(AnimatorConditionMode.IfNot, 0, baseName);
+            toOffTransition.hasExitTime = false;
+            toOffTransition.duration = 0.1f;
+
             var onState = layer.stateMachine.AddState($"{baseName}_On", new Vector3(150, -50));
             onState.motion = animOnClip;
             onState.writeDefaultValues = false;
-            layer.stateMachine.defaultState = idleState;
 
-            var idleToOn = idleState.AddTransition(onState);
-            idleToOn.exitTime = 0;
-            idleToOn.duration = 0;
-            idleToOn.hasExitTime = false;
-            idleToOn.conditions = new AnimatorCondition[]
-            {
-            new() {mode = AnimatorConditionMode.If,parameter = baseName,threshold = 1},
-            };
+            var toOnTransition = layer.stateMachine.AddAnyStateTransition(onState);
+            toOnTransition.AddCondition(AnimatorConditionMode.If, 0, baseName);
+            toOnTransition.hasExitTime = false;
+            toOnTransition.duration = 0.1f;
 
-            var idleToOff = idleState.AddTransition(offState);
-            idleToOff.exitTime = 0;
-            idleToOff.duration = 0;
-            idleToOff.hasExitTime = false;
-            idleToOff.conditions = new AnimatorCondition[]
-            {
-            new() { mode = AnimatorConditionMode.IfNot, parameter = baseName, threshold = 1},
-            };
             this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}.controller"));
-
-            var toOn = offState.AddTransition(onState);
-            toOn.exitTime = 0;
-            toOn.duration = 0;
-            toOn.hasExitTime = false;
-            toOn.conditions = new AnimatorCondition[]
-            {
-            new() { mode = AnimatorConditionMode.If, parameter = baseName, threshold = 1},
-            };
-            var toOff = onState.AddTransition(offState);
-            toOff.exitTime = 0;
-            toOff.duration = 0;
-            toOff.hasExitTime = false;
-            toOff.conditions = new AnimatorCondition[]
-            {
-            new() { mode = AnimatorConditionMode.IfNot, parameter = baseName, threshold = 1},
-            };
 
             // create menu
             var menu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
