@@ -163,8 +163,8 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             maMergeAnimator.matchAvatarWriteDefaults = false;
             // NOTE:
             //   If the layer priority is lower than FaceEmo,
-            //   when the Gesture(Left|Right)Weight values are changed (e.g. by a trigger press),
-            //   the RimShade is switched On/Off, causing the avatar flickering.
+            //   when the Gesture(Left|Right)Weight values are changed (e.g., by a triggering press),
+            //   the RimShade switches On/Off, causing the avatar to flicker.
             //   Therefore, the priority should be higher than FaceEmo.
             maMergeAnimator.layerPriority = 1;
         }
