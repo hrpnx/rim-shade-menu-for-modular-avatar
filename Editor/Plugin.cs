@@ -26,7 +26,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             .BeforePlugin("nadena.dev.modular-avatar")
             .Run("Install RimShadeMenu", ctx =>
             {
-                var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<Installer>();
+                var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<RimShadeMenuInstaller>();
                 var avatarRoot = menuInstaller.gameObject.transform.parent.gameObject;
 
                 if (!avatarRoot.GetComponent<VRCAvatarDescriptor>())
@@ -39,7 +39,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             }
         );
 
-        private void CreateMenu(GameObject avatarRoot, Installer menuInstaller)
+        private void CreateMenu(GameObject avatarRoot, RimShadeMenuInstaller menuInstaller)
         {
             List<Renderer> renderers = new();
             this.CollectRenderersRecursive(avatarRoot.transform, renderers);
@@ -59,7 +59,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             Directory.CreateDirectory(destDir);
             AssetDatabase.Refresh();
 
-            var baseName = "RimShadeMenu";
+            var baseName = "RimShade";
 
             // create animation clip (on)
             var destAnimClipOnFilePath = Path.Combine(destDir, $"{baseName}_On.anim");
@@ -108,10 +108,11 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             var layer = controller.layers[0];
             layer.name = baseName;
             layer.stateMachine.name = baseName;
-            layer.stateMachine.entryPosition = new Vector3(-300, 0);
-            layer.stateMachine.anyStatePosition = new Vector3(400, 0);
+            layer.stateMachine.entryPosition = new Vector3(0, 0);
+            layer.stateMachine.anyStatePosition = new Vector3(300, 0);
+            layer.stateMachine.exitPosition = new Vector3(0, -75);
 
-            var offState = layer.stateMachine.AddState($"{baseName}_Off", new Vector3(150, 50));
+            var offState = layer.stateMachine.AddState($"{baseName}_Off", new Vector3(150, 150));
             offState.motion = animOffClip;
             offState.writeDefaultValues = false;
 
@@ -120,7 +121,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             toOffTransition.hasExitTime = false;
             toOffTransition.duration = 0f;
 
-            var onState = layer.stateMachine.AddState($"{baseName}_On", new Vector3(150, -50));
+            var onState = layer.stateMachine.AddState($"{baseName}_On", new Vector3(150, -150));
             onState.motion = animOnClip;
             onState.writeDefaultValues = false;
 
@@ -129,7 +130,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             toOnTransition.hasExitTime = false;
             toOnTransition.duration = 0f;
 
-            this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}.controller"));
+            this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}_Controller.controller"));
 
             // create menu
             var menu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
@@ -143,7 +144,8 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
                 parameter = new ExpressionControl.Parameter { name = baseName }
             };
             menu.controls.Add(exControl);
-            this.CreateAsset(menu, Path.Combine(destDir, $"{baseName}.asset"));
+
+            this.CreateAsset(menu, Path.Combine(destDir, $"{baseName}_Menu.asset"));
 
             // attach maMenuInstaller to menuInstaller
             var maMenuInstaller = menuInstaller.gameObject.AddComponent<ModularAvatarMenuInstaller>();
