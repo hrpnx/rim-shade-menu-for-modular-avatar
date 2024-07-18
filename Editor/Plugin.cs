@@ -108,10 +108,11 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             var layer = controller.layers[0];
             layer.name = baseName;
             layer.stateMachine.name = baseName;
-            layer.stateMachine.entryPosition = new Vector3(-300, 0);
-            layer.stateMachine.anyStatePosition = new Vector3(400, 0);
+            layer.stateMachine.entryPosition = new Vector3(0, 0);
+            layer.stateMachine.anyStatePosition = new Vector3(300, 0);
+            layer.stateMachine.exitPosition = new Vector3(0, -75);
 
-            var offState = layer.stateMachine.AddState($"{baseName}_Off", new Vector3(150, 50));
+            var offState = layer.stateMachine.AddState($"{baseName}_Off", new Vector3(150, 150));
             offState.motion = animOffClip;
             offState.writeDefaultValues = false;
 
@@ -120,7 +121,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             toOffTransition.hasExitTime = false;
             toOffTransition.duration = 0f;
 
-            var onState = layer.stateMachine.AddState($"{baseName}_On", new Vector3(150, -50));
+            var onState = layer.stateMachine.AddState($"{baseName}_On", new Vector3(150, -150));
             onState.motion = animOnClip;
             onState.writeDefaultValues = false;
 
@@ -129,7 +130,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             toOnTransition.hasExitTime = false;
             toOnTransition.duration = 0f;
 
-            this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}_Menu.controller"));
+            this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}_Controller.controller"));
 
             // create menu
             var menu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
