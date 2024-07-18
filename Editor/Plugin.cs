@@ -153,7 +153,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             {
                 nameOrPrefix = baseName,
                 defaultValue = 0,
-                saved = false,
+                saved = menuInstaller.Saved,
                 syncType = ParameterSyncType.Bool
             });
             var maMergeAnimator = menuInstaller.gameObject.AddComponent<ModularAvatarMergeAnimator>();
