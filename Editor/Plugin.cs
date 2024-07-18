@@ -118,7 +118,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             var toOffTransition = layer.stateMachine.AddAnyStateTransition(offState);
             toOffTransition.AddCondition(AnimatorConditionMode.IfNot, 0, baseName);
             toOffTransition.hasExitTime = false;
-            toOffTransition.duration = 0.1f;
+            toOffTransition.duration = 0f;
 
             var onState = layer.stateMachine.AddState($"{baseName}_On", new Vector3(150, -50));
             onState.motion = animOnClip;
@@ -127,7 +127,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             var toOnTransition = layer.stateMachine.AddAnyStateTransition(onState);
             toOnTransition.AddCondition(AnimatorConditionMode.If, 0, baseName);
             toOnTransition.hasExitTime = false;
-            toOnTransition.duration = 0.1f;
+            toOnTransition.duration = 0f;
 
             this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}.controller"));
 
@@ -152,8 +152,8 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             maParameters.parameters.Add(new ParameterConfig
             {
                 nameOrPrefix = baseName,
-                defaultValue = 0,
-                saved = false,
+                defaultValue = menuInstaller.Default ? 1 : 0,
+                saved = menuInstaller.Saved,
                 syncType = ParameterSyncType.Bool
             });
             var maMergeAnimator = menuInstaller.gameObject.AddComponent<ModularAvatarMergeAnimator>();
@@ -163,8 +163,8 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             maMergeAnimator.matchAvatarWriteDefaults = false;
             // NOTE:
             //   If the layer priority is lower than FaceEmo,
-            //   when the Gesture(Left|Right)Weight values are changed (e.g. by a trigger press),
-            //   the RimShade is switched On/Off, causing the avatar flickering.
+            //   when the Gesture(Left|Right)Weight values are changed (e.g., by a triggering press),
+            //   the RimShade switches On/Off, causing the avatar to flicker.
             //   Therefore, the priority should be higher than FaceEmo.
             maMergeAnimator.layerPriority = 1;
         }
