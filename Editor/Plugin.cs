@@ -59,7 +59,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             Directory.CreateDirectory(destDir);
             AssetDatabase.Refresh();
 
-            var baseName = "RimShadeMenu";
+            var baseName = "RimShade";
 
             // create animation clip (on)
             var destAnimClipOnFilePath = Path.Combine(destDir, $"{baseName}_On.anim");
@@ -129,7 +129,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             toOnTransition.hasExitTime = false;
             toOnTransition.duration = 0f;
 
-            this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}.controller"));
+            this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}_Menu.controller"));
 
             // create menu
             var menu = ScriptableObject.CreateInstance<VRCExpressionsMenu>();
@@ -143,7 +143,8 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
                 parameter = new ExpressionControl.Parameter { name = baseName }
             };
             menu.controls.Add(exControl);
-            this.CreateAsset(menu, Path.Combine(destDir, $"{baseName}.asset"));
+
+            this.CreateAsset(menu, Path.Combine(destDir, $"{baseName}_Menu.asset"));
 
             // attach maMenuInstaller to menuInstaller
             var maMenuInstaller = menuInstaller.gameObject.AddComponent<ModularAvatarMenuInstaller>();
