@@ -118,7 +118,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             var toOffTransition = layer.stateMachine.AddAnyStateTransition(offState);
             toOffTransition.AddCondition(AnimatorConditionMode.IfNot, 0, baseName);
             toOffTransition.hasExitTime = false;
-            toOffTransition.duration = 0.1f;
+            toOffTransition.duration = 0f;
 
             var onState = layer.stateMachine.AddState($"{baseName}_On", new Vector3(150, -50));
             onState.motion = animOnClip;
@@ -127,7 +127,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             var toOnTransition = layer.stateMachine.AddAnyStateTransition(onState);
             toOnTransition.AddCondition(AnimatorConditionMode.If, 0, baseName);
             toOnTransition.hasExitTime = false;
-            toOnTransition.duration = 0.1f;
+            toOnTransition.duration = 0f;
 
             this.CreateAsset(controller, Path.Combine(destDir, $"{baseName}.controller"));
 
