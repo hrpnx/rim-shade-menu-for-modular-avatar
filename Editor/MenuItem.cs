@@ -22,7 +22,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
 
             var menuInstaller = new GameObject(menuInstallerName);
             menuInstaller.transform.SetParent(avatarRoot.transform);
-            var component = menuInstaller.AddComponent<Installer>();
+            var component = menuInstaller.AddComponent<RimShadeMenuInstaller>();
             component.Color = new Color(0.5f, 0.5f, 0.5f, 1);
             component.NormalStrength = 1.0f;
             component.Border = 0.5f;

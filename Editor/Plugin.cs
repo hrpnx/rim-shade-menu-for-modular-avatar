@@ -26,7 +26,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             .BeforePlugin("nadena.dev.modular-avatar")
             .Run("Install RimShadeMenu", ctx =>
             {
-                var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<Installer>();
+                var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<RimShadeMenuInstaller>();
                 var avatarRoot = menuInstaller.gameObject.transform.parent.gameObject;
 
                 if (!avatarRoot.GetComponent<VRCAvatarDescriptor>())
@@ -39,7 +39,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             }
         );
 
-        private void CreateMenu(GameObject avatarRoot, Installer menuInstaller)
+        private void CreateMenu(GameObject avatarRoot, RimShadeMenuInstaller menuInstaller)
         {
             List<Renderer> renderers = new();
             this.CollectRenderersRecursive(avatarRoot.transform, renderers);
