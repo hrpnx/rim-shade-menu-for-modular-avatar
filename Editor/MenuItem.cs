@@ -28,6 +28,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             component.Border = 0.5f;
             component.Blur = 1.0f;
             component.FresnelPower = 1.0f;
+            component.Default = false;
             component.Saved = false;
         }
     }

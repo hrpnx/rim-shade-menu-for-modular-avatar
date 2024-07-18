@@ -152,7 +152,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             maParameters.parameters.Add(new ParameterConfig
             {
                 nameOrPrefix = baseName,
-                defaultValue = 0,
+                defaultValue = menuInstaller.Default ? 1 : 0,
                 saved = menuInstaller.Saved,
                 syncType = ParameterSyncType.Bool
             });
