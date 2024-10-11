@@ -27,6 +27,11 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             .Run("Install RimShadeMenu", ctx =>
             {
                 var menuInstaller = ctx.AvatarRootObject.GetComponentInChildren<RimShadeMenuInstaller>();
+                if (menuInstaller == null)
+                {
+                    return;
+                }
+
                 var avatarRoot = menuInstaller.gameObject.transform.parent.gameObject;
 
                 if (!avatarRoot.GetComponent<VRCAvatarDescriptor>())
