@@ -73,15 +73,15 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             foreach (var renderer in renderers)
             {
                 var transform = renderer.gameObject.transform;
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._UseRimShade", 1);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.r", menuInstaller.Color.r);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.g", menuInstaller.Color.g);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.b", menuInstaller.Color.b);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.a", menuInstaller.Color.a);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeNormalStrength", menuInstaller.NormalStrength);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBorder", menuInstaller.Border);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBlur", menuInstaller.Blur);
-                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeFresnelPower", menuInstaller.FresnelPower);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._UseRimShade", 1, null);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.r", menuInstaller.Color.r, menuInstaller.ColorExclusions);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.g", menuInstaller.Color.g, menuInstaller.ColorExclusions);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.b", menuInstaller.Color.b, menuInstaller.ColorExclusions);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeColor.a", menuInstaller.Color.a, menuInstaller.ColorExclusions);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeNormalStrength", menuInstaller.NormalStrength, null);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBorder", menuInstaller.Border, null);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeBlur", menuInstaller.Blur, null);
+                this.AddAnimation(transform, avatarRoot.transform, animOnClip, "material._RimShadeFresnelPower", menuInstaller.FresnelPower, null);
             }
 
             this.CreateAsset(animOnClip, destAnimClipOnFilePath);
@@ -93,7 +93,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             foreach (var renderer in renderers)
             {
                 var transform = renderer.gameObject.transform;
-                this.AddAnimation(transform, avatarRoot.transform, animOffClip, "material._UseRimShade", 0);
+                this.AddAnimation(transform, avatarRoot.transform, animOffClip, "material._UseRimShade", 0, null);
             }
 
             this.CreateAsset(animOffClip, destAnimClipOffFilePath);
@@ -207,7 +207,7 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             return parent == root ? path : null;
         }
 
-        private void AddAnimation(Transform transform, Transform rootTransform, AnimationClip clip, string propertyName, float value)
+        private void AddAnimation(Transform transform, Transform rootTransform, AnimationClip clip, string propertyName, float value, List<Material> exclusions = null)
         {
             var path = this.GetRelativePath(transform, rootTransform);
             var renderer = transform.GetComponent<Renderer>();
@@ -215,6 +215,11 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.editor
             foreach (var mat in renderer.sharedMaterials)
             {
                 if (mat == null || mat.shader.name.IndexOf("lilToon") < 0)
+                {
+                    continue;
+                }
+
+                if(null != exclusions && exclusions.Contains(mat))
                 {
                     continue;
                 }
