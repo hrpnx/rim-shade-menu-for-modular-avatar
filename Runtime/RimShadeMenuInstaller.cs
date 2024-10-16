@@ -16,5 +16,6 @@ namespace dev.hrpnx.rim_shade_menu_for_modular_avatar.runtime
         public bool Default;
         public bool Saved;
         public VRCExpressionsMenu RootMenu;
+        public bool AnimationWriteDefault = false;
     }
 }
